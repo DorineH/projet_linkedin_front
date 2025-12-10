@@ -11,7 +11,7 @@ const api = axios.create({
 
 // Exemple d’appel API en fetch
 export async function getJobs() {
-    const res = await fetch(`${API_URL}`);
+    const res = await fetch(`${API_URL}/jobs`);
     return res.json();
 }
 
