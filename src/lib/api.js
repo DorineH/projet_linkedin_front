@@ -9,10 +9,4 @@ const api = axios.create({
     timeout: 15000,
 });
 
-// Exemple d’appel API en fetch
-export async function getJobs() {
-    const res = await fetch(`${API_URL}/jobs`);
-    return res.json();
-}
-
 export default api;
