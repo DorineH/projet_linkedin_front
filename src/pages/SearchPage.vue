@@ -41,7 +41,6 @@
       </select>
 
       <button @click="onSearch" class="btn">Rechercher</button>
-
       <button @click="onReset" class="btn-secondary">Réinitialiser</button>
     </div>
 
@@ -57,7 +56,6 @@
 
     <!-- États vides / chargement / erreur -->
     <div v-else-if="store.loading" class="mt-8 text-gray-500">Chargement…</div>
-
     <div v-else class="mt-8 text-gray-500">Aucun résultat</div>
 
     <div v-if="store.error" class="mt-2 text-red-600">
@@ -72,11 +70,17 @@
       :page-size="store.page_size"
       @update:page="onPage"
     />
+
+    <!-- Infos pagination -->
+    <div class="meta mt-2 text-sm text-gray-600" v-if="store.total">
+      Affichage {{ from }}–{{ to }} sur {{ store.total }} offres • Page
+      {{ store.page }} / {{ totalPages }}
+    </div>
   </section>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useJobsStore } from "@/stores/jobs";
 import Pagination from "@/components/Pagination.vue";
 import JobCard from "@/components/JobCard.vue";
@@ -89,6 +93,24 @@ const contract_type = ref(store.contract_type);
 const date_from = ref(store.date_from);
 const date_to = ref(store.date_to);
 const sort = ref(store.sort || "-posted_date");
+
+// Calculs pagination
+const totalPages = computed(() => {
+  const size = store.page_size || 20;
+  return Math.max(1, Math.ceil((store.total || 0) / size));
+});
+
+const from = computed(() => {
+  if (!store.total) return 0;
+  const size = store.page_size || 20;
+  return (store.page - 1) * size + 1;
+});
+
+const to = computed(() => {
+  if (!store.total) return 0;
+  const size = store.page_size || 20;
+  return Math.min(store.page * size, store.total);
+});
 
 function syncToStore() {
   store.q = q.value;
@@ -111,17 +133,13 @@ async function onPage(newPage) {
 }
 
 async function onReset() {
-  // Réinitialiser les champs locaux
   q.value = "";
   contract_type.value = "";
   date_from.value = "";
   date_to.value = "";
   sort.value = "-posted_date";
 
-  // Réinitialiser la pagination
   store.page = 1;
-
-  // Synchroniser avec le store et recharger
   syncToStore();
   await store.fetch();
 }
@@ -131,7 +149,6 @@ onMounted(async () => {
     syncToStore();
     await store.fetch();
   } else {
-    // On remet juste les inputs à jour avec le store
     q.value = store.q;
     contract_type.value = store.contract_type;
     date_from.value = store.date_from;
