@@ -7,10 +7,13 @@ import HelloWorld from "./components/HelloWorld.vue";
     <header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b">
       <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
         <div class="text-xl font-bold">Jobs Visualizer</div>
-        <nav class="ml-auto text-sm text-gray-600">
-          <RouterLink class="px-3 py-1 hover:text-black" to="/search"
-            >Recherche</RouterLink
-          >
+        <nav class="ml-auto text-sm text-gray-600 flex gap-2">
+          <RouterLink class="px-3 py-1 hover:text-black" to="/search">
+            Recherche
+          </RouterLink>
+          <RouterLink class="px-3 py-1 hover:text-black" to="/candidatures">
+            Candidatures sauvegardées
+          </RouterLink>
         </nav>
       </div>
     </header>
