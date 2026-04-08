@@ -44,7 +44,6 @@ const props = defineProps({
 });
 
 const isSaved = computed(() => props.savedSet.has(props.job.id));
-console.log('JobCard.vue: job.id', props.job.id, 'savedSet', props.savedSet, 'isSaved', isSaved.value);
 
 const snippet = computed(() => {
   const desc = props.job.description || "";
@@ -54,4 +53,4 @@ const snippet = computed(() => {
 function fmt(d) {
   return d ? new Date(d).toLocaleDateString() : "";
 }
-</script>::
+</script>

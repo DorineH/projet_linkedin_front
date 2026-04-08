@@ -90,6 +90,7 @@
 </template>
 
 <script setup>
+
 import { ref, onMounted, computed, triggerRef } from "vue";
 import { useJobsStore } from "@/stores/jobs";
 import Pagination from "@/components/Pagination.vue";
@@ -98,120 +99,19 @@ import { listSavedJobs, saveJob, deleteSavedJob } from "@/api/savedJobs";
 
 const store = useJobsStore();
 
-// Champs liés aux inputs
 const q = ref(store.q);
 const contract_type = ref(store.contract_type);
 const date_from = ref(store.date_from);
 const date_to = ref(store.date_to);
 const sort = ref(store.sort || "-posted_date");
 
-// Sauvegardes
 const savedSet = ref(new Set());
-const savedMap = ref({}); // jobId -> savedId
-
-// async function handleToggleSave(job) {
-//   if (savedSet.value.has(job.id)) {
-//     // Unsave
-//     const savedId = savedMap.value[job.id];
-//     if (savedId) {
-//       await deleteSavedJob(savedId);
-//       await fetchSavedJobs();
-//       console.log('Après unsave, savedSet:', savedSet.value);
-//     }
-//   } else {
-//     // Save
-//     const res = await saveJob(job.id);
-//     if (res && res.saved_id) {
-//       await fetchSavedJobs();
-//       console.log('Après save, savedSet:', savedSet.value);
-//     }
-//   }
-// }
-
-// async function handleToggleSave(job) {
-//   const jobId = job.id; // IMPORTANT : garde le même type partout (string/number)
-
-//   if (savedSet.value.has(jobId)) {
-//     // ✅ update UI direct (optimiste)
-//     savedSet.value.delete(jobId);
-//     triggerRef(savedSet);
-
-//     const savedId = savedMap.value[jobId];
-
-//     try {
-//       // const savedId = savedMap.value[jobId];
-//       const savedId =
-//         res?.saved_id ??
-//         res?.savedId ??
-//         res?.id ??
-//         res?.data?.id ??
-//         res?.data?.saved_id ??
-//         null;
-
-//       if (savedId) {
-//         await deleteSavedJob(savedId);
-//         delete savedMap.value[jobId];
-//       }
-//     } catch (e) {
-//       // rollback si erreur
-//       savedSet.value.add(jobId);
-//       triggerRef(savedSet);
-//       console.error(e);
-//     }
-//   } else {
-//     // // ✅ update UI direct (optimiste)
-//     // savedSet.value.add(jobId);
-//     // triggerRef(savedSet);
-
-//     // try {
-//     //   const res = await saveJob(jobId);
-//     //   if (res?.saved_id) {
-//     //     savedMap.value[jobId] = res.saved_id;
-//     //   } else {
-//     //     // rollback si API renvoie rien
-//     //     savedSet.value.delete(jobId);
-//     //     triggerRef(savedSet);
-//     //   }
-//     // } catch (e) {
-//     //   // rollback si erreur
-//     //   savedSet.value.delete(jobId);
-//     //   triggerRef(savedSet);
-//     //   console.error(e);
-//     // }
-//     const jobId = job.id;
-
-//     // 👉 étoile jaune immédiate (optimiste)
-//     savedSet.value.add(jobId);
-//     triggerRef(savedSet);
-
-//     try {
-//       const res = await saveJob(jobId);
-
-//       console.log("saveJob response =", res); // 👈 ICI le log important
-
-//       const savedId =
-//         res?.saved_id ?? res?.savedId ?? res?.id ?? res?.data?.saved_id ?? null;
-
-//       if (savedId) {
-//         savedMap.value[jobId] = savedId;
-//       } else {
-//         console.warn("Pas de saved_id retourné par l'API");
-//       }
-//     } catch (e) {
-//       // rollback si erreur API
-//       savedSet.value.delete(jobId);
-//       triggerRef(savedSet);
-//       console.error(e);
-//     }
-//   }
-// }
+const savedMap = ref({});
 
 async function handleToggleSave(job) {
   const jobId = job.id;
 
-  // ⭐⭐ CAS UNSAVE (étoile jaune -> supprimer)
   if (savedSet.value.has(jobId)) {
-    // UI immédiate
     savedSet.value.delete(jobId);
     triggerRef(savedSet);
 
@@ -219,15 +119,13 @@ async function handleToggleSave(job) {
 
     try {
       if (savedId) {
-        await deleteSavedJob(savedId); // ✅ suppression en BDD
-        delete savedMap.value[jobId];  // ✅ nettoyage map
+        await deleteSavedJob(savedId); 
+        delete savedMap.value[jobId];
       } else {
-        // Cas rare: UI dit "saved" mais on n'a pas l'id => on resync
         console.warn("Unsaved impossible: savedId manquant, resync...");
         await fetchSavedJobs();
       }
     } catch (e) {
-      // rollback UI si erreur
       savedSet.value.add(jobId);
       triggerRef(savedSet);
       console.error(e);
@@ -235,12 +133,11 @@ async function handleToggleSave(job) {
     return;
   }
 
-  // ⭐ CAS SAVE (étoile grise -> ajouter)
   savedSet.value.add(jobId);
   triggerRef(savedSet);
 
   try {
-    const res = await saveJob(jobId);
+    const res = await saveJob(Number(jobId));
 
     const savedId =
       res?.id ?? res?.saved_id ?? res?.data?.id ?? res?.data?.saved_id ?? null;
@@ -248,18 +145,15 @@ async function handleToggleSave(job) {
     if (savedId) {
       savedMap.value[jobId] = savedId;
     } else {
-      // Si l'API ne renvoie pas l'id, on resync pour récupérer l'id côté BDD
       await fetchSavedJobs();
     }
   } catch (e) {
-    // rollback UI si erreur
     savedSet.value.delete(jobId);
     triggerRef(savedSet);
     console.error(e);
   }
 }
 
-// Calculs pagination
 const totalPages = computed(() => {
   const size = store.page_size || 20;
   return Math.max(1, Math.ceil((store.total || 0) / size));
@@ -310,22 +204,17 @@ async function onReset() {
 }
 
 async function fetchSavedJobs() {
-  // Récupère tous les jobs sauvegardés
   const data = await listSavedJobs();
-  console.log("listSavedJobs response", data);
-  // Gère le cas où la réponse n'est pas un tableau (ex: { items: [...] })
   const jobs = Array.isArray(data)
     ? data
     : data && Array.isArray(data.items)
       ? data.items
       : [];
-  console.log("jobs used for savedSet", jobs);
   savedSet.value = new Set(jobs.map(j => j.job_id));
   savedMap.value = {};
   for (const j of jobs) {
     savedMap.value[j.job_id] = j.id;
   }
-  console.log("savedSet after fetch", savedSet.value);
 }
 
 onMounted(async () => {
