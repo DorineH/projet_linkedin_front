@@ -7,7 +7,6 @@ export const useJobsStore = defineStore('jobs', {
         total: 0,
         loading: false,
         error: null,
-        // filtres
         q: '',
         company: '',
         contract_type: '',
@@ -32,9 +31,6 @@ export const useJobsStore = defineStore('jobs', {
                     page: this.page,
                     page_size: this.page_size,
                 }
-
-                console.log(this.q)
-                console.log('API params envoyés :', params)
 
                 const { data } = await api.get('/api/jobs', { params })
                 this.items = data.items
