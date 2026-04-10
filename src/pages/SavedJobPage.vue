@@ -10,11 +10,11 @@
     <div v-if="loading" class="text-gray-500">Chargement…</div>
     <div v-else-if="filtered.length === 0" class="text-gray-500">Aucune candidature sauvegardée</div>
     <div v-else class="space-y-4">
-      <div v-for="item in filtered" :key="item.id" class="p-4 rounded-xl border bg-white flex flex-col gap-2">
+      <div v-for="item in filtered" :key="item.id" class="p-4 rounded-xl border bg-white dark:bg-gray-800 flex flex-col gap-2">
         <div class="flex justify-between items-center">
-          <div>
-            <div class="font-semibold text-lg">{{ item.job?.title }}</div>
-            <div class="text-sm text-gray-600">{{ item.job?.company }} • {{ item.job?.location }}</div>
+          <div class="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex flex-col gap-2">
+            <div class="font-semibold text-lg text-gray-900 dark:text-gray-100">{{ item.job?.title }}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">{{ item.job?.company }} • {{ item.job?.location }}</div>
           </div>
           <a :href="item.job?.url" target="_blank" class="btn-primary">Ouvrir LinkedIn</a>
         </div>
@@ -71,12 +71,12 @@ function remove(item) {
 
 <style scoped>
 .input {
-  @apply px-3 py-2 rounded-xl border border-gray-300 bg-white;
+  @apply px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100;
 }
 .btn-primary {
-  @apply px-3 py-2 rounded-xl bg-black text-white hover:opacity-90;
+  @apply px-3 py-2 rounded-xl bg-black dark:bg-blue-600 text-white hover:opacity-90;
 }
 .btn-secondary {
-  @apply px-3 py-2 rounded-xl border border-gray-300 bg-white text-sm hover:bg-gray-50;
+  @apply px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm hover:bg-gray-50 dark:hover:bg-gray-700;
 }
 </style>

@@ -1,6 +1,5 @@
 <template>
   <section class="max-w-3xl mx-auto p-4 space-y-4">
-    <!-- Bouton retour -->
     <button class="btn-secondary" @click="goBack">
       ← Retour aux résultats
     </button>
@@ -27,7 +26,7 @@
           </button>
       </div>
 
-      <div class="text-gray-700">
+      <div class="text-gray-700 dark:text-gray-300">
         <p><strong>Entreprise :</strong> {{ job.company }}</p>
         <p><strong>Lieu :</strong> {{ job.location }}</p>
         <p><strong>Contrat :</strong> {{ job.contract_type || "N/A" }}</p>
@@ -128,9 +127,9 @@ onMounted(async () => {
 
 <style scoped>
 .btn-primary {
-  @apply inline-block px-4 py-2 bg-black text-white rounded-xl hover:opacity-90;
+  @apply inline-block px-4 py-2 bg-black dark:bg-blue-600 text-white rounded-xl hover:opacity-90;
 }
 .btn-secondary {
-  @apply inline-block mb-2 px-3 py-1 rounded-xl border border-gray-300 bg-white text-sm hover:bg-gray-50;
+  @apply inline-block mb-2 px-3 py-1 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm hover:bg-gray-50 dark:hover:bg-gray-700;
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
-  <article class="p-4 rounded-2xl border bg-white hover:shadow-sm transition relative">
+  <article class="p-4 rounded-2xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-sm transition relative">
     <header class="flex items-start justify-between gap-2">
       <div>
-        <h3 class="font-semibold text-lg leading-snug">{{ job.title }}</h3>
-        <p class="text-sm text-gray-600">
+        <h3 class="font-semibold text-lg leading-snug text-gray-900 dark:text-gray-100">{{ job.title }}</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
           {{ job.company }} • {{ job.location || 'Lieu N/A' }}
         </p>
       </div>
@@ -12,23 +12,17 @@
           class="text-xl focus:outline-none mt-1"
           :aria-label="isSaved ? 'Retirer des favoris' : 'Ajouter aux favoris'"
           @click.stop.prevent="$emit('toggle-save', job)"
-          :title="isSaved ? 'Retirer des favoris' : 'Ajouter aux favoris'"
         >
           <span :style="isSaved ? 'color: #FFD600' : 'color: #bbb'">
             <span v-if="isSaved">★</span>
             <span v-else>☆</span>
           </span>
         </button>
-        <a
-          v-if="job.url"
-          :href="job.url"
-          target="_blank"
-          class="text-sm text-blue-600"
-        >Ouvrir</a>
+        <a v-if="job.url" :href="job.url" target="_blank" class="text-sm text-blue-500 dark:text-blue-400">Ouvrir</a>
       </div>
     </header>
-    <p class="mt-2 text-sm text-gray-700 line-clamp-3">{{ snippet }}</p>
-    <footer class="mt-3 text-xs text-gray-500">
+    <p class="mt-2 text-sm text-gray-700 dark:text-gray-300 line-clamp-3">{{ snippet }}</p>
+    <footer class="mt-3 text-xs text-gray-500 dark:text-gray-400">
       Publiée: {{ fmt(job.posted_date) || 'N/A' }}
     </footer>
   </article>

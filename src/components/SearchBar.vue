@@ -21,12 +21,12 @@
 
     <!-- Dates -->
     <div class="flex gap-2 w-full md:w-auto">
-      <div class="flex flex-col text-xs text-gray-600">
-        <span>Publié après</span>
+      <div class="flex flex-col text-xs text-gray-600 dark:text-gray-400  ">
+        <span class="text-xs text-gray-600 dark:text-gray-400">Publié après</span>
         <input v-model="local.date_from" type="date" class="input" />
       </div>
-      <div class="flex flex-col text-xs text-gray-600">
-        <span>Publié avant</span>
+      <div class="flex flex-col text-xs text-gray-600 dark:text-gray-400">
+        <span class="text-xs text-gray-600 dark:text-gray-400">Publié avant</span>
         <input v-model="local.date_to" type="date" class="input" />
       </div>
     </div>
@@ -43,6 +43,7 @@
 </template>
 
 <script setup>
+
 import { reactive, watch } from "vue";
 
 const props = defineProps({
@@ -65,9 +66,9 @@ function apply() {
 
 <style scoped>
 .input {
-  @apply w-full md:w-auto flex-1 px-3 py-2 rounded-xl border border-gray-300 bg-white;
+  @apply w-full md:w-auto flex-1 px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100;
 }
 .btn {
-  @apply px-4 py-2 rounded-xl bg-black text-white hover:opacity-90;
+  @apply px-4 py-2 rounded-xl bg-black dark:bg-blue-600 text-white hover:opacity-90;
 }
 </style>

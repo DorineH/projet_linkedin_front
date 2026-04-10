@@ -1,8 +1,6 @@
 <template>
   <section>
-    <!-- Filtres de recherche -->
     <div class="flex flex-col md:flex-row flex-wrap gap-3 items-end mb-4">
-      <!-- Texte libre -->
       <input
         v-model="q"
         type="text"
@@ -62,12 +60,11 @@
           @toggle-save="handleToggleSave"
         />
       </RouterLink>
-    </div>
+</div>
 
-    <!-- États vides / chargement / erreur -->
-    <div v-else-if="store.loading" class="mt-8 text-gray-500">Chargement…</div>
-    <div v-else class="mt-8 text-gray-500">Aucun résultat</div>
-
+<!-- États vides / chargement / erreur -->
+<div v-else-if="store.loading" class="mt-8 text-gray-500 dark:text-gray-400">Chargement…</div>
+<div v-else class="mt-8 text-gray-500 dark:text-gray-400">Aucun résultat</div>
     <div v-if="store.error" class="mt-2 text-red-600">
       {{ store.error }}
     </div>
@@ -82,7 +79,7 @@
     />
 
     <!-- Infos pagination -->
-    <div class="meta mt-2 text-sm text-gray-600" v-if="store.total">
+    <div class="meta mt-2 text-sm text-gray-600 dark:text-gray-400" v-if="store.total">
       Affichage {{ from }}–{{ to }} sur {{ store.total }} offres • Page
       {{ store.page }} / {{ totalPages }}
     </div>
@@ -234,12 +231,19 @@ onMounted(async () => {
 
 <style scoped>
 .input {
-  @apply w-full md:w-auto flex-1 px-3 py-2 rounded-xl border border-gray-300 bg-white;
+  @apply w-full md:w-auto flex-1 px-3 py-2 rounded-xl border 
+         border-gray-300 dark:border-gray-600 
+         bg-white dark:bg-gray-800 
+         text-gray-900 dark:text-gray-100;
 }
 .btn {
-  @apply px-4 py-2 rounded-xl bg-black text-white hover:opacity-90;
+  @apply px-4 py-2 rounded-xl bg-black dark:bg-blue-600 text-white hover:opacity-90;
 }
 .btn-secondary {
-  @apply px-4 py-2 rounded-xl border border-gray-300 bg-white text-sm hover:bg-gray-50;
+  @apply px-4 py-2 rounded-xl border 
+         border-gray-300 dark:border-gray-600 
+         bg-white dark:bg-gray-800 
+         text-gray-900 dark:text-gray-100 
+         text-sm hover:bg-gray-50 dark:hover:bg-gray-700;
 }
 </style>
